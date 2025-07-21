@@ -32,5 +32,5 @@ app.use('/',authRoute);
 
 
 app.listen(3000,()=>{
-    console.log("server Started");
+    console.log("server Started..");
 })
