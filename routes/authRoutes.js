@@ -1,41 +1,38 @@
-// const express = require('express')
-// const path = require('path')
-// const router = express.Router()
-
-// router.get("/", (req,res)=>{
-//     res.sendFile(path.join(__dirname, "../view", "signup.html"))
-// })
-
-// router.get("/login", (req,res)=>{
-//     res.sendFile(path.join(__dirname, "../view", "login.html"))
-// })
-
-// router.post("/signup", (req,res)=>{
-//     console.log(req.body)
-// })
-
-// module.exports = router
+const express = require('express')
+const path = require('path')
+const router = express.Router()
+const fs=require("fs")
 
 
-
-
-
-
-
-const express=require('express');
-const router=express.Router();
-const path=require('path');
-
-router.get("/",(req,res)=>{
-    res.sendFile(path.join(__dirname,"../view","signup.html"));
+router.get("/", (req,res)=>{
+    res.sendFile(path.join(__dirname, "../view", "signup.html"))
 })
 
-router.get("/login",(req,res)=>{
-    res.sendFile(path.join(__dirname,"../view","login.html"));
+router.get("/login", (req,res)=>{
+    res.sendFile(path.join(__dirname, "../view", "login.html"))
 })
 
-router.post("/signup",(req,res)=>{
-    console.log(req.body);
+router.post("/signup", (req,res)=>{
+    try{
+        fs.readFile(path.join(__dirname,"../users.json"),'utf-8',(err,data)=>{
+        data=JSON.parse(data)
+        let userFound=data.find(ele=>ele.username=req.body.username)
+        if(userFound){
+            res.json({message:"username already taken"})
+        }else{
+            data.push(req.body)
+            fs.writeFile(path.join(__dirname,"../users.json"),JSON.stringify(data),(err)=>{
+                if(!err){
+                res.json({message:"user created..."})
+            }
+            })
+            
+        }
+    })
+}catch(error){
+console.log(error)
+}
 })
 
-module.exports=router;
+module.exports = router
+
